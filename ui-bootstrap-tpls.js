@@ -3231,7 +3231,10 @@ angular.module('ui.bootstrap.dropdown', ['ui.bootstrap.position'])
       var pos = $position.positionElements($element, self.dropdownMenu, 'bottom-left', true),
         css,
         rightalign,
-        scrollbarWidth;
+        // <#5942> https://github.com/angular-ui/bootstrap/issues/5942
+        scrollbarPadding,
+        scrollbarWidth = 0;
+        // </5942>
 
       css = {
         top: pos.top + 'px',
@@ -3244,7 +3247,13 @@ angular.module('ui.bootstrap.dropdown', ['ui.bootstrap.position'])
         css.right = 'auto';
       } else {
         css.left = 'auto';
-        scrollbarWidth = $position.scrollbarWidth(true);
+        // <#5942> https://github.com/angular-ui/bootstrap/issues/5942
+        scrollbarPadding = $position.scrollbarPadding(appendTo);
+
+        if (scrollbarPadding.heightOverflow && scrollbarPadding.scrollbarWidth) {
+          scrollbarWidth = scrollbarPadding.scrollbarWidth;
+        }
+        // </5942>
         css.right = window.innerWidth - scrollbarWidth -
           (pos.left + $element.prop('offsetWidth')) + 'px';
       }
